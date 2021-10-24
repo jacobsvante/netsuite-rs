@@ -5,9 +5,9 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT"
 authors = ["Jacob Magnusson <m@jacobian.se>"]
-repository = "https://github.com/jmagnusson/netsuite"
+repository = "https://github.com/jmagnusson/netsuite-rs"
 documentation = "https://docs.rs/netsuite/"
-homepage = "https://github.com/jmagnusson/netsuite"
+homepage = "https://github.com/jmagnusson/netsuite-rs"
 readme = "README.md"
 keywords = ["netsuite"]
 

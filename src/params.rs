@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 
-
 #[derive(Debug, Clone)]
 pub struct Params<'a>(Vec<(&'a str, &'a str)>);
 
@@ -18,12 +17,18 @@ impl<'a> Params<'a> {
     }
 }
 
-impl<'a> Into<HashMap<&'a str, &'a str>> for Params<'a> {
-    fn into(self) -> HashMap<&'a str, &'a str> {
-        let mut map = HashMap::with_capacity(self.0.len());
-        for (k, v) in self.0 {
+impl<'a> From<Params<'a>> for HashMap<&'a str, &'a str> {
+    fn from(params: Params<'a>) -> Self {
+        let mut map = Self::with_capacity(params.0.len());
+        for (k, v) in params.0 {
             map.insert(k, v);
         }
         map
+    }
+}
+
+impl<'a> Default for Params<'a> {
+    fn default() -> Self {
+        Self::new()
     }
 }

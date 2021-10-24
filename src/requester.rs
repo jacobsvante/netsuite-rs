@@ -1,7 +1,7 @@
 use crate::config::Config;
 use crate::oauth1;
-use crate::Error;
 use crate::params::Params;
+use crate::Error;
 use http::Method;
 use log::info;
 

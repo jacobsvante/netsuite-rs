@@ -1,14 +1,19 @@
 use crate::error::Error;
-use crate::requester::Requester;
 use crate::params::Params;
+use crate::requester::Requester;
 use http::Method;
 
-pub struct SuiteQl<'a> { requester: Requester<'a>, limit: usize }
+pub struct SuiteQl<'a> {
+    requester: Requester<'a>,
+    limit: usize,
+}
 
 impl<'a> SuiteQl<'a> {
-
     pub fn new(requester: Requester<'a>) -> Self {
-        Self { requester, limit: 1000 }
+        Self {
+            requester,
+            limit: 1000,
+        }
     }
 
     pub fn set_limit(&mut self, limit: usize) {

@@ -47,7 +47,11 @@ pub fn run() -> Result<(), Error> {
     let api = RestApi::new(&config);
 
     match &opts.subcmd {
-        SubCommand::SuiteQl { query, limit, offset } => {
+        SubCommand::SuiteQl {
+            query,
+            limit,
+            offset,
+        } => {
             let result = api.suiteql.raw(query, *limit, *offset)?;
             println!("{}", result);
         }

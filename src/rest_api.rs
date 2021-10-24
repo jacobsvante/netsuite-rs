@@ -1,9 +1,8 @@
 use crate::config::Config;
-use crate::suiteql::SuiteQl;
 use crate::requester::Requester;
+use crate::suiteql::SuiteQl;
 
-static DEFAULT_BASE_URL: &'static str =
-    "https://{}.suitetalk.api.netsuite.com/services/rest/query/v1";
+static DEFAULT_BASE_URL: &str = "https://{}.suitetalk.api.netsuite.com/services/rest/query/v1";
 
 pub struct RestApi<'a> {
     pub suiteql: SuiteQl<'a>,

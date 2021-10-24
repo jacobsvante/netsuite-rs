@@ -1,7 +1,7 @@
 [package]
 name = "netsuite"
 description = "Library for making requests to the NetSuite REST APIs."
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "MIT"
 authors = ["Jacob Magnusson <m@jacobian.se>"]

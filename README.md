@@ -36,10 +36,10 @@ assert_eq!(res.unwrap(), [Price { internalid: "24".into(), unitprice: "95.49".in
 Get all prices via SuiteQL.
 
 ```bash
-export ACCOUNT_ID=<6 chars>;
+export ACCOUNT=<6 chars>;
 export CONSUMER_KEY=<64 chars>;
 export CONSUMER_SECRET=<64 chars>;
-export TOKEN_KEY=<64 chars>;
+export TOKEN_ID=<64 chars>;
 export TOKEN_SECRET=<64 chars>;
 netsuite suiteql 'SELECT * FROM pricing'
 ```

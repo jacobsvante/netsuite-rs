@@ -7,13 +7,13 @@ use clap::Parser;
 #[clap(name = "netsuite", version = "abc123")]
 struct Opts {
     #[clap(short, long, env)]
-    account_id: String,
+    account: String,
     #[clap(short = 'c', long, env)]
     consumer_key: String,
     #[clap(short = 'C', long, env)]
     consumer_secret: String,
     #[clap(short = 't', long, env)]
-    token_key: String,
+    token_id: String,
     #[clap(short = 'T', long, env)]
     token_secret: String,
     #[clap(subcommand)]
@@ -36,17 +36,17 @@ enum SubCommand {
 pub fn run() -> Result<(), Error> {
     env_logger::init();
 
-    let opts = Opts::parse();
+    let cli_opts = Opts::parse();
     let config = Config::new(
-        &opts.account_id,
-        &opts.consumer_key,
-        &opts.consumer_secret,
-        &opts.token_key,
-        &opts.token_secret,
+        &cli_opts.account,
+        &cli_opts.consumer_key,
+        &cli_opts.consumer_secret,
+        &cli_opts.token_id,
+        &cli_opts.token_secret,
     );
     let api = RestApi::new(&config);
 
-    match &opts.subcmd {
+    match &cli_opts.subcmd {
         SubCommand::SuiteQl {
             query,
             limit,

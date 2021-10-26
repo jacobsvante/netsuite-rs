@@ -26,7 +26,7 @@ impl<'a> Requester<'a> {
             &self.config.consumer,
             Some(&self.config.token),
             params.clone().map(|p| p.into()),
-            Some(self.config.account_id),
+            Some(self.config.account),
         )
     }
 

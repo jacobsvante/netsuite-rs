@@ -10,7 +10,7 @@ pub struct RestApi<'a> {
 
 impl<'a> RestApi<'a> {
     pub fn new(config: &'a Config) -> Self {
-        let base_url = DEFAULT_BASE_URL.replace("{}", config.account_id);
+        let base_url = DEFAULT_BASE_URL.replace("{}", config.account);
         let requester = Requester::new(config, base_url);
         let suiteql = SuiteQl::new(requester);
         Self { suiteql }

@@ -2,7 +2,7 @@ use std::{fmt::Display, str::FromStr};
 
 use clap::{AppSettings, IntoApp};
 
-use super::cli::Opts;
+use super::opts::Opts;
 
 pub(crate) fn safe_extract_arg<T>(arg_id: &str) -> Option<T>
 where

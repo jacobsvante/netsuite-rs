@@ -1,5 +1,5 @@
-use super::cli::Opts;
 use super::env::EnvVar;
+use super::opts::Opts;
 use super::CliError;
 use clap::{AppSettings, IntoApp};
 use configparser::ini::Ini;

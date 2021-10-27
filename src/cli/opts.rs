@@ -1,17 +1,9 @@
-use std::{
-    io::{stdout, Write},
-    os::unix::prelude::OsStrExt,
-    path::PathBuf,
-};
+use std::path::PathBuf;
 
 use clap::Parser;
-use log::{debug, LevelFilter};
+use log::LevelFilter;
 
 use super::env::EnvVar;
-use super::{helpers::safe_extract_arg, ini};
-use crate::config::Config;
-use crate::error::Error;
-use crate::rest_api::RestApi;
 
 #[derive(Debug, Parser)]
 #[clap(name = "netsuite", version = "abc123")]
@@ -22,7 +14,7 @@ pub(crate) struct Opts {
     #[clap(short = 'p', long, env)]
     ini_path: Option<PathBuf>,
     #[clap(subcommand)]
-    subcmd: SubCommand,
+    pub(crate) subcmd: SubCommand,
     /// Set the log level
     #[clap(
         short = 'l',
@@ -34,7 +26,7 @@ pub(crate) struct Opts {
 }
 
 #[derive(Debug, Parser)]
-enum SubCommand {
+pub(crate) enum SubCommand {
     #[clap(name = "suiteql")]
     SuiteQl {
         /// The query to execute. If `-` is provided, query will be read from standard input.
@@ -56,45 +48,4 @@ enum SubCommand {
     },
     #[clap(name = "default-ini-path")]
     DefaultIniPath,
-}
-
-pub fn run() -> Result<(), Error> {
-    if let Some(level_filter) = safe_extract_arg::<LevelFilter>("level-filter") {
-        env_logger::builder().filter(None, level_filter).init();
-    }
-
-    if let Err(err) = ini::to_env() {
-        debug!("Couldn't load INI: {}", err);
-    };
-
-    let cli_opts = Opts::parse();
-
-    match &cli_opts.subcmd {
-        SubCommand::SuiteQl {
-            query,
-            account,
-            consumer_key,
-            consumer_secret,
-            token_id,
-            token_secret,
-            limit,
-            offset,
-        } => {
-            let config = Config::new(
-                &account,
-                &consumer_key,
-                &consumer_secret,
-                &token_id,
-                &token_secret,
-            );
-            let api = RestApi::new(&config);
-            let result = api.suiteql.raw(query, *limit, *offset)?;
-            println!("{}", result);
-        }
-        SubCommand::DefaultIniPath => {
-            ini::default_location().map(|p| stdout().write(p.as_os_str().as_bytes()));
-        }
-    }
-
-    Ok(())
 }

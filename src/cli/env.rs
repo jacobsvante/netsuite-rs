@@ -10,14 +10,10 @@ pub enum EnvVar {
 
 impl EnvVar {
     pub fn exists(key: &str) -> bool {
-        match key {
-            "ACCOUNT" => true,
-            "CONSUMER_KEY" => true,
-            "CONSUMER_SECRET" => true,
-            "TOKEN_ID" => true,
-            "TOKEN_SECRET" => true,
-            _ => false,
-        }
+        matches!(
+            key,
+            "ACCOUNT" | "CONSUMER_KEY" | "CONSUMER_SECRET" | "TOKEN_ID" | "TOKEN_SECRET"
+        )
     }
 
     pub fn set<'a>(key: &'a str, val: &'a str) -> Result<&'a str, CliError> {

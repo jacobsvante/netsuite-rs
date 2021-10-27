@@ -1,8 +1,9 @@
-mod cli;
 mod env;
 mod error;
 mod helpers;
 mod ini;
+mod main;
+mod opts;
 
-pub use cli::*;
 pub use error::*;
+pub use main::*;

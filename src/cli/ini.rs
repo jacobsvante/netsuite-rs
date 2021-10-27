@@ -1,10 +1,10 @@
-use std::path::PathBuf;
-use clap::{IntoApp, AppSettings};
-use configparser::ini::Ini;
-use log::debug;
-use super::CliError;
 use super::cli::Opts;
 use super::env::EnvVar;
+use super::CliError;
+use clap::{AppSettings, IntoApp};
+use configparser::ini::Ini;
+use log::debug;
+use std::path::PathBuf;
 
 pub(crate) fn default_location() -> Option<PathBuf> {
     dirs::config_dir().map(|p| p.join("netsuite.ini"))
@@ -49,7 +49,9 @@ pub(crate) fn to_env() -> Result<(), CliError> {
     for (k, v) in section.unwrap_or_default() {
         let k = k.to_ascii_uppercase();
         if let Some(v) = v {
-            EnvVar::set(&k, &v)?;
+            if let Err(err) = EnvVar::set(&k, &v) {
+                debug!("{}", err);
+            }
         }
     }
 

@@ -4,13 +4,14 @@ use std::{
     path::PathBuf,
 };
 
+use clap::Parser;
+use log::{debug, LevelFilter};
+
+use super::env::EnvVar;
+use super::{helpers::safe_extract_arg, ini};
 use crate::config::Config;
 use crate::error::Error;
 use crate::rest_api::RestApi;
-use clap::Parser;
-use log::{LevelFilter, debug};
-use super::ini;
-use super::env::EnvVar;
 
 #[derive(Debug, Parser)]
 #[clap(name = "netsuite", version = "abc123")]
@@ -58,16 +59,15 @@ enum SubCommand {
 }
 
 pub fn run() -> Result<(), Error> {
+    if let Some(level_filter) = safe_extract_arg::<LevelFilter>("level-filter") {
+        env_logger::builder().filter(None, level_filter).init();
+    }
 
     if let Err(err) = ini::to_env() {
         debug!("Couldn't load INI: {}", err);
     };
 
     let cli_opts = Opts::parse();
-
-    if let Some(level_filter) = cli_opts.level_filter {
-        env_logger::builder().filter(None, level_filter).init();
-    }
 
     match &cli_opts.subcmd {
         SubCommand::SuiteQl {
@@ -98,4 +98,3 @@ pub fn run() -> Result<(), Error> {
 
     Ok(())
 }
-

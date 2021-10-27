@@ -46,11 +46,12 @@ pub(crate) fn to_env() -> Result<(), CliError> {
         debug!("No such INI section: {}.", &ini_section);
     }
 
-    section.unwrap_or_default().into_iter().for_each(|(k, v)| {
+    for (k, v) in section.unwrap_or_default() {
         let k = k.to_ascii_uppercase();
         if let Some(v) = v {
-            EnvVar::set(&k, &v);
+            EnvVar::set(&k, &v)?;
         }
-    });
+    }
+
     Ok(())
 }

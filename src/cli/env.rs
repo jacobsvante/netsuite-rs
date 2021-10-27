@@ -1,3 +1,5 @@
+use super::CliError;
+
 pub enum EnvVar {
     Account,
     ConsumerKey,
@@ -18,9 +20,12 @@ impl EnvVar {
         }
     }
 
-    pub fn set(key: &str, val: &str) {
+    pub fn set<'a>(key: &'a str, val: &'a str) -> Result<&'a str, CliError> {
         if EnvVar::exists(key) {
             std::env::set_var(key, val);
+            Ok(val)
+        } else {
+            Err(CliError::UnknownEnvironmentVariable(key.to_string()))
         }
     }
 }

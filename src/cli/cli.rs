@@ -22,6 +22,14 @@ pub(crate) struct Opts {
     ini_path: Option<PathBuf>,
     #[clap(subcommand)]
     subcmd: SubCommand,
+    /// Set the log level
+    #[clap(
+        short = 'l',
+        long = "log-level",
+        value_name = "level",
+        env = "LOG_LEVEL"
+    )]
+    level_filter: Option<LevelFilter>,
 }
 
 #[derive(Debug, Parser)]
@@ -56,6 +64,10 @@ pub fn run() -> Result<(), Error> {
     };
 
     let cli_opts = Opts::parse();
+
+    if let Some(level_filter) = cli_opts.level_filter {
+        env_logger::builder().filter(None, level_filter).init();
+    }
 
     match &cli_opts.subcmd {
         SubCommand::SuiteQl {

@@ -1,9 +1,30 @@
 use percent_encoding::{AsciiSet, NON_ALPHANUMERIC};
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
-use ring::hmac::{self, HMAC_SHA1_FOR_LEGACY_USE_ONLY};
-use std::collections::HashMap;
+use ring::hmac;
 use std::time::SystemTime;
+
+#[derive(Debug, Clone, Copy)]
+pub enum Algorithm {
+    Sha1,
+    Sha256,
+}
+
+impl Algorithm {
+    fn ring_algorithm(self) -> hmac::Algorithm {
+        match self {
+            Self::Sha1 => hmac::HMAC_SHA1_FOR_LEGACY_USE_ONLY,
+            Self::Sha256 => hmac::HMAC_SHA256,
+        }
+    }
+
+    fn id(self) -> &'static str {
+        match self {
+            Self::Sha1 => "HMAC-SHA1",
+            Self::Sha256 => "HMAC-SHA256",
+        }
+    }
+}
 
 #[derive(Clone, Debug)]
 pub struct Token<'a> {
@@ -22,10 +43,11 @@ pub fn authorize(
     uri: &str,
     consumer: &Token,
     token: Option<&Token>,
-    params: Option<HashMap<&str, &str>>,
+    params: Option<Vec<(String, String)>>,
     realm: Option<&str>,
+    algorithm: Algorithm,
 ) -> String {
-    let mut params = params.unwrap_or_else(HashMap::new);
+    let mut params = params.unwrap_or_else(Vec::new);
     // duration_since might fail if the system clock is set to before the UNIX epoch.
     // Handling this by just setting timestamp to 0 in that case
     let timestamp = SystemTime::now()
@@ -40,17 +62,18 @@ pub fn authorize(
         .take(32)
         .collect();
 
-    params.insert("oauth_consumer_key", consumer.key);
-    params.insert("oauth_nonce", &nonce);
-    params.insert("oauth_signature_method", "HMAC-SHA1");
-    params.insert("oauth_timestamp", &timestamp);
-    params.insert("oauth_version", "1.0");
+    params.push(("oauth_nonce".into(), nonce));
+    params.push(("oauth_timestamp".into(), timestamp));
+    params.push(("oauth_version".into(), "1.0".into()));
+    params.push(("oauth_signature_method".into(), algorithm.id().to_owned()));
+    params.push(("oauth_consumer_key".into(), consumer.key.to_owned()));
 
     if let Some(tk) = token {
-        params.insert("oauth_token", tk.key);
+        params.push(("oauth_token".into(), tk.key.to_owned()));
     }
 
     let signature = gen_signature(
+        algorithm,
         method,
         uri,
         &to_query(&params),
@@ -58,15 +81,13 @@ pub fn authorize(
         token.map(|t| t.secret),
     );
 
-    params.insert("oauth_signature", &signature);
+    params.push(("oauth_signature".into(), signature));
 
     let mut pairs = params
         .iter()
         .filter(|&(k, _)| k.starts_with("oauth_"))
         .map(|(k, v)| format!("{}=\"{}\"", k, encode(v)))
         .collect::<Vec<_>>();
-
-    pairs.sort();
 
     if let Some(realm) = realm {
         pairs.insert(0, format!("realm=\"{}\"", realm));
@@ -95,32 +116,28 @@ fn encode(s: &str) -> String {
     percent_encoding::percent_encode(s.as_bytes(), &STRICT_ENCODE_SET).collect()
 }
 
-fn to_query(params: &HashMap<&str, &str>) -> String {
+fn to_query(params: &Vec<(String, String)>) -> String {
     let mut pairs: Vec<_> = params
         .iter()
         .map(|(k, v)| format!("{}={}", encode(k), encode(v)))
         .collect();
-
     pairs.sort();
     pairs.join("&")
 }
 
 fn gen_signature(
+    algorithm: Algorithm,
     method: &str,
     uri: &str,
     query: &str,
     consumer_secret: &str,
     token_secret: Option<&str>,
 ) -> String {
+    let key = [encode(consumer_secret), encode(token_secret.unwrap_or(""))].join("&");
     let base = format!("{}&{}&{}", encode(method), encode(uri), encode(query));
 
-    let key = format!(
-        "{}&{}",
-        encode(consumer_secret),
-        encode(token_secret.unwrap_or(""))
-    );
-
-    let s_key = hmac::Key::new(HMAC_SHA1_FOR_LEGACY_USE_ONLY, key.as_ref());
+    let algo = algorithm.ring_algorithm();
+    let s_key = hmac::Key::new(algo, key.as_ref());
     let signature = hmac::sign(&s_key, base.as_bytes());
 
     base64::encode(signature.as_ref())

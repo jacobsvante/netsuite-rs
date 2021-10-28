@@ -19,7 +19,7 @@ impl<'a> Requester<'a> {
         format!("{}/{}", self.base_url, endpoint)
     }
 
-    fn auth_header(&self, method: Method, url: &str, params: &Option<Params>) -> String {
+    fn auth_header(&self, method: &Method, url: &str, params: &Option<Params>) -> String {
         oauth1::authorize(
             method.as_str(),
             url,
@@ -27,6 +27,7 @@ impl<'a> Requester<'a> {
             Some(&self.config.token),
             params.clone().map(|p| p.into()),
             Some(self.config.account),
+            oauth1::Algorithm::Sha256,
         )
     }
 
@@ -39,7 +40,7 @@ impl<'a> Requester<'a> {
         payload: Option<&str>,
     ) -> Result<String, Error> {
         let url = self.make_url(endpoint);
-        let auth = self.auth_header(method, &url, &params);
+        let auth = self.auth_header(&method, &url, &params);
 
         let mut req = ureq::post(&url)
             .set("Authorization", &auth)

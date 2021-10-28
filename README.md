@@ -6,6 +6,10 @@ Supports both programmatic and CLI usage.
 
 Currently using ureq for HTTP requests, which means this library is not useful for async environments currently. Async will probably be released as a feature flag in the future.
 
+## Beta quality disclaimer
+
+The project's API is still very much in fluctuation. Pin your dependency to the current minor version to avoid breaking changes. From 1.0 and forward we will keep a stable API.
+
 ## CLI
 
 This is the easiest way to get started. To find out what you can do with the CLI, just append `--help` or `-h` to the installed `netsuite` command.

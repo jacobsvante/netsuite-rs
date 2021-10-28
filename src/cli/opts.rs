@@ -4,9 +4,10 @@ use clap::Parser;
 use log::LevelFilter;
 
 use super::env::EnvVar;
+use crate::metadata::VERSION;
 
 #[derive(Debug, Parser)]
-#[clap(name = "netsuite", version = "abc123")]
+#[clap(name = "netsuite", version = VERSION)]
 pub(crate) struct Opts {
     #[clap(short = 's', long, env, default_value = "netsuite")]
     ini_section: String,

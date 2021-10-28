@@ -1,6 +1,7 @@
 use crate::error::Error;
 use crate::params::Params;
 use crate::requester::Requester;
+use crate::response::Response;
 use http::Method;
 
 pub struct SuiteQl<'a> {
@@ -20,19 +21,17 @@ impl<'a> SuiteQl<'a> {
         self.limit = limit;
     }
 
-    pub fn raw(&self, query: &str, limit: usize, offset: usize) -> Result<String, Error> {
+    pub fn raw(&self, query: &str, limit: usize, offset: usize) -> Result<Response, Error> {
         let mut params = Params::new();
-        let limit = limit.to_string();
-        let offset = offset.to_string();
-        params.push("limit", &limit);
-        params.push("offset", &offset);
+        params.push("limit".into(), limit.to_string());
+        params.push("offset".into(), offset.to_string());
         let mut headers = Params::new();
         let payload = SuiteQlPayload { q: query };
         let payload = serde_json::to_string(&payload)?;
-        headers.push("Prefer", "transient");
+        headers.push("Prefer".into(), "transient".into());
         self.requester.request(
             Method::POST,
-            "suiteql",
+            "query/v1/suiteql",
             Some(params),
             Some(headers),
             Some(&payload),
@@ -43,7 +42,7 @@ impl<'a> SuiteQl<'a> {
         let mut collected = Vec::new();
         for i in 0.. {
             let res = self.raw(query, self.limit, self.limit * i)?;
-            let res: Response = serde_json::from_str(&res)?;
+            let res: SuiteQlResponse = serde_json::from_str(res.body())?;
             let parsed: Vec<T> = serde_json::from_value(res.items)?;
             collected.extend(parsed);
             if !res.has_more {
@@ -62,7 +61,7 @@ struct Link {
 
 #[derive(Debug, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
-struct Response {
+struct SuiteQlResponse {
     links: Vec<Link>,
     count: usize,
     has_more: bool,

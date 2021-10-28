@@ -6,6 +6,7 @@ mod metadata;
 pub mod oauth1;
 mod params;
 mod requester;
+mod response;
 mod rest_api;
 mod suiteql;
 

@@ -116,7 +116,7 @@ fn encode(s: &str) -> String {
     percent_encoding::percent_encode(s.as_bytes(), &STRICT_ENCODE_SET).collect()
 }
 
-fn to_query(params: &Vec<(String, String)>) -> String {
+fn to_query(params: &[(String, String)]) -> String {
     let mut pairs: Vec<_> = params
         .iter()
         .map(|(k, v)| format!("{}={}", encode(k), encode(v)))

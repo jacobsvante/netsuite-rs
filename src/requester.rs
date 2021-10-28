@@ -1,10 +1,14 @@
+use std::collections::HashMap;
+
 use crate::config::Config;
 use crate::oauth1;
 use crate::params::Params;
+use crate::response::Response;
 use crate::Error;
 use http::Method;
-use log::info;
+use log::{debug, info};
 
+#[derive(Clone)]
 pub struct Requester<'a> {
     config: &'a Config<'a>,
     base_url: String,
@@ -16,7 +20,7 @@ impl<'a> Requester<'a> {
     }
 
     fn make_url(&self, endpoint: &str) -> String {
-        format!("{}/{}", self.base_url, endpoint)
+        format!("{}/{}", self.base_url, endpoint.trim_start_matches('/'))
     }
 
     fn auth_header(&self, method: &Method, url: &str, params: &Option<Params>) -> String {
@@ -38,11 +42,11 @@ impl<'a> Requester<'a> {
         params: Option<Params>,
         headers: Option<Params>,
         payload: Option<&str>,
-    ) -> Result<String, Error> {
+    ) -> Result<Response, Error> {
         let url = self.make_url(endpoint);
         let auth = self.auth_header(&method, &url, &params);
 
-        let mut req = ureq::post(&url)
+        let mut req = ureq::request(method.as_str(), &url)
             .set("Authorization", &auth)
             .set("Content-Type", "application/json");
 
@@ -62,7 +66,7 @@ impl<'a> Requester<'a> {
             info!("Payload: {}", payload);
             req.send_string(payload)
         } else {
-            req.call()
+            req.send_string("")
         };
 
         let resp = match resp {
@@ -77,7 +81,15 @@ impl<'a> Requester<'a> {
                 return Err(Error::HttpTransportError(transport.to_string()));
             }
         };
-        let body = resp.into_string()?;
-        Ok(body)
+        let status = http::StatusCode::from_u16(resp.status()).unwrap();
+        let headers: HashMap<String, String> = resp
+            .headers_names()
+            .into_iter()
+            .filter_map(|name| resp.header(&name).map(|value| (name, value.to_owned())))
+            .collect();
+
+        let parsed = Response::new(status, headers, resp.into_string()?);
+        debug!("Response: {}", &parsed);
+        Ok(parsed)
     }
 }

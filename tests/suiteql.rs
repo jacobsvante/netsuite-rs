@@ -31,14 +31,14 @@ fn raw_no_params() {
     let api = make_api(&config, &server);
     let mock = server.mock(|when, then| {
         when.method(POST)
-            .path("/suiteql")
+            .path("/query/v1/suiteql")
             .query_param("limit", "1000")
             .query_param("offset", "0");
         then.status(200).body("test");
     });
     let res = api.suiteql.raw("SELECT * FROM pricing", 1000, 0);
     mock.assert();
-    assert_eq!(res.unwrap(), "test");
+    assert_eq!(res.unwrap().body(), "test");
 }
 
 #[test]
@@ -49,14 +49,14 @@ fn raw_limit_param() {
     let api = make_api(&config, &server);
     let mock = server.mock(|when, then| {
         when.method(POST)
-            .path("/suiteql")
+            .path("/query/v1/suiteql")
             .query_param("limit", "2")
             .query_param("offset", "0");
         then.status(200).body("test");
     });
     let res = api.suiteql.raw("SELECT * FROM pricing", 2, 0);
     mock.assert();
-    assert_eq!(res.unwrap(), "test");
+    assert_eq!(res.unwrap().body(), "test");
 }
 
 #[test]
@@ -70,11 +70,11 @@ fn no_params() {
         api
     };
     let mock1 = server.mock(|when, then| {
-        when.method(POST).path("/suiteql").query_param("offset", "0");
+        when.method(POST).path("/query/v1/suiteql").query_param("offset", "0");
         then.status(200).body(r#"{"links": [], "count": 2, "hasMore": true, "totalResults": 4, "items": [{"unitprice": "1"}, {"unitprice": "2"}]}"#);
     });
     let mock2 = server.mock(|when, then| {
-        when.method(POST).path("/suiteql").query_param("offset", "2");
+        when.method(POST).path("/query/v1/suiteql").query_param("offset", "2");
         then.status(200).body(r#"{"links": [], "count": 2, "hasMore": false, "totalResults": 4, "items": [{"unitprice": "3"}, {"unitprice": "4"}]}"#);
     });
 

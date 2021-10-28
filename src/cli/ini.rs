@@ -23,7 +23,10 @@ pub(crate) fn to_env() -> Result<(), CliError> {
                 None => arg,
             });
         let matches = app.get_matches();
-        let ini_section: String = matches.value_of_t_or_exit("ini-section");
+        let ini_section: String = match matches.value_of_t("ini-section") {
+            Ok(s) => s,
+            Err(_) => return Err(CliError::MissingIniSection),
+        };
         let ini_path: PathBuf = match matches.value_of_t("ini-path") {
             Ok(p) => p,
             Err(_) => return Err(CliError::MissingIniPath),

@@ -23,12 +23,12 @@ impl SuiteQl {
 
     pub fn raw(&self, query: &str, limit: usize, offset: usize) -> Result<Response, Error> {
         let mut params = Params::new();
-        params.push("limit".into(), limit.to_string());
-        params.push("offset".into(), offset.to_string());
+        params.push("limit", limit);
+        params.push("offset", offset);
         let mut headers = Params::new();
         let payload = SuiteQlPayload { q: query };
         let payload = serde_json::to_string(&payload)?;
-        headers.push("Prefer".into(), "transient".into());
+        headers.push("Prefer", "transient");
         self.requester.request(
             Method::POST,
             "query/v1/suiteql",

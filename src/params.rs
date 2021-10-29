@@ -6,8 +6,8 @@ impl Params {
         Self(Vec::new())
     }
 
-    pub fn push(&mut self, k: String, v: String) {
-        self.0.push((k, v))
+    pub fn push<K: ToString, V: ToString>(&mut self, k: K, v: V) {
+        self.0.push((k.to_string(), v.to_string()))
     }
 
     pub fn get(&self) -> &Vec<(String, String)> {

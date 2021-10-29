@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0](https://www.github.com/jmagnusson/netsuite-rs/compare/v0.2.0...v0.3.0) (2021-10-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* Simplify API usage by not using references for Config et al.
+
+### Features
+
+* Simplify API usage by not using references for Config et al. ([aa7f96d](https://www.github.com/jmagnusson/netsuite-rs/commit/aa7f96d079b65155becded72632da01b4b1d4dc3))
+
 ## [0.2.0](https://www.github.com/jmagnusson/netsuite-rs/compare/v0.1.1...v0.2.0) (2021-10-28)
 
 

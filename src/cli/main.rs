@@ -1,6 +1,7 @@
 use std::{
     fs,
     io::{stdout, Write},
+    net::SocketAddrV4,
     os::unix::prelude::OsStrExt,
 };
 
@@ -41,7 +42,7 @@ pub fn run() -> Result<(), Error> {
                 token_secret,
             );
             let api = RestApi::new(config);
-            rest_api_sub_command(subcmd, api)?
+            rest_api_sub_command(subcmd, api)?;
         }
         SubCommand::DefaultIniPath => {
             ini::default_location().map(|p| stdout().write(p.as_os_str().as_bytes()));
@@ -53,12 +54,15 @@ pub fn run() -> Result<(), Error> {
 
 fn rest_api_sub_command(subcmd: RestApiSubCommand, api: RestApi) -> Result<(), Error> {
     use RestApiSubCommand::*;
-    let response = match subcmd {
+    match subcmd {
         RestApiSubCommand::SuiteQl {
             query,
             limit,
             offset,
-        } => api.suiteql.raw(&query, limit, offset)?,
+        } => {
+            let resp = api.suiteql.raw(&query, limit, offset)?;
+            println!("{}", &resp.body());
+        }
         Get {
             endpoint,
             params,
@@ -74,7 +78,8 @@ fn rest_api_sub_command(subcmd: RestApiSubCommand, api: RestApi) -> Result<(), E
             } else {
                 Some(headers.into())
             };
-            api.get_raw(&endpoint, params, headers)?
+            let resp = api.get_raw(&endpoint, params, headers)?;
+            println!("{}", &resp.body());
         }
         Post {
             endpoint,
@@ -97,7 +102,8 @@ fn rest_api_sub_command(subcmd: RestApiSubCommand, api: RestApi) -> Result<(), E
             } else {
                 None
             };
-            api.post_raw(&endpoint, params, headers, payload.as_deref())?
+            let resp = api.post_raw(&endpoint, params, headers, payload.as_deref())?;
+            println!("{}", &resp.body());
         }
         Put {
             endpoint,
@@ -120,7 +126,8 @@ fn rest_api_sub_command(subcmd: RestApiSubCommand, api: RestApi) -> Result<(), E
             } else {
                 None
             };
-            api.put_raw(&endpoint, params, headers, payload.as_deref())?
+            let resp = api.put_raw(&endpoint, params, headers, payload.as_deref())?;
+            println!("{}", &resp.body());
         }
         Patch {
             endpoint,
@@ -143,7 +150,8 @@ fn rest_api_sub_command(subcmd: RestApiSubCommand, api: RestApi) -> Result<(), E
             } else {
                 None
             };
-            api.patch_raw(&endpoint, params, headers, payload.as_deref())?
+            let resp = api.patch_raw(&endpoint, params, headers, payload.as_deref())?;
+            println!("{}", &resp.body());
         }
         Delete {
             endpoint,
@@ -160,9 +168,46 @@ fn rest_api_sub_command(subcmd: RestApiSubCommand, api: RestApi) -> Result<(), E
             } else {
                 Some(headers.into())
             };
-            api.delete_raw(&endpoint, params, headers)?
+            let resp = api.delete_raw(&endpoint, params, headers)?;
+            println!("{}", &resp.body());
+        }
+        JsonSchema { record_type } => {
+            let resp = api.metadata.jsonschema(&record_type)?;
+            println!("{}", &resp.body());
+        }
+        OpenApi { record_types } => {
+            let resp = api.metadata.openapi(&record_types)?;
+            println!("{}", &resp.body());
+        }
+        OpenApiServe { record_types, bind } => {
+            let resp = api.metadata.openapi(&record_types)?;
+            let schema = resp.body();
+            openapi_serve(bind, schema)?
         }
     };
-    println!("{}", response.body());
+    Ok(())
+}
+
+fn openapi_serve(bind: SocketAddrV4, schema: &str) -> Result<(), Error> {
+    use tiny_http::{Header, Response, Server, StatusCode};
+    let server = Server::http(bind).unwrap();
+    for req in server.incoming_requests() {
+        match (req.method(), req.url()) {
+            (&tiny_http::Method::Get, "/") => {
+                let mut resp = Response::from_string(include_str!("openapi-docs.html"));
+                resp.add_header(
+                    Header::from_bytes(&b"Content-Type"[..], &b"text/html"[..]).unwrap(),
+                );
+                req.respond(resp)?;
+            }
+            (&tiny_http::Method::Get, "/openapi.json") => {
+                let resp = Response::from_string(schema);
+                req.respond(resp)?;
+            }
+            _ => {
+                req.respond(Response::new_empty(StatusCode(404)))?;
+            }
+        }
+    }
     Ok(())
 }

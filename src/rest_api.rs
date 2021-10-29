@@ -2,6 +2,7 @@ use crate::response::Response;
 
 use super::config::Config;
 use super::error::Error;
+use super::metadata_api::MetadataApi;
 use super::params::Params;
 use super::requester::Requester;
 use super::suiteql::SuiteQl;
@@ -11,6 +12,7 @@ static DEFAULT_BASE_URL: &str = "https://{}.suitetalk.api.netsuite.com/services/
 pub struct RestApi {
     requester: Requester,
     pub suiteql: SuiteQl,
+    pub metadata: MetadataApi,
 }
 
 impl RestApi {
@@ -18,7 +20,12 @@ impl RestApi {
         let base_url = Self::default_base_url(&config);
         let requester = Requester::new(config, base_url);
         let suiteql = SuiteQl::new(requester.clone());
-        Self { requester, suiteql }
+        let metadata = MetadataApi::new(requester.clone());
+        Self {
+            requester,
+            suiteql,
+            metadata,
+        }
     }
 
     fn default_base_url(config: &Config) -> String {
@@ -29,7 +36,12 @@ impl RestApi {
     pub fn with_base_url(config: Config, base_url: String) -> Self {
         let requester = Requester::new(config, base_url);
         let suiteql = SuiteQl::new(requester.clone());
-        Self { requester, suiteql }
+        let metadata = MetadataApi::new(requester.clone());
+        Self {
+            requester,
+            suiteql,
+            metadata,
+        }
     }
 
     pub fn get_raw(

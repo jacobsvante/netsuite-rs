@@ -1,3 +1,4 @@
+use std::net::SocketAddrV4;
 use std::{path::PathBuf, str::FromStr};
 
 use clap::Parser;
@@ -119,5 +120,23 @@ pub(crate) enum RestApiSubCommand {
         limit: usize,
         #[clap(short, long, default_value = "0")]
         offset: usize,
+    },
+    #[clap(name = "jsonschema")]
+    JsonSchema {
+        /// The record type to get JSON Schema for
+        record_type: String,
+    },
+    #[clap(name = "openapi")]
+    OpenApi {
+        /// The record types to get an OpenAPI schema for. If left empty, all will be retrieved, which can take a few minutes.
+        record_types: Vec<String>,
+    },
+    /// Serve OpenAPI schema browser via Swagger UI
+    #[clap(name = "openapi-serve")]
+    OpenApiServe {
+        /// The record types to get an OpenAPI schema for. If left empty, all will be retrieved, which can take a few minutes.
+        record_types: Vec<String>,
+        #[clap(short, long, default_value = "127.0.0.1:8000")]
+        bind: SocketAddrV4,
     },
 }

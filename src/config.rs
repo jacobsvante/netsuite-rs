@@ -1,23 +1,24 @@
 use crate::oauth1;
 
-pub struct Config<'a> {
-    pub account: &'a str,
-    pub consumer: oauth1::Token<'a>,
-    pub token: oauth1::Token<'a>,
+#[derive(Clone, Debug)]
+pub struct Config {
+    pub account: String,
+    pub consumer: oauth1::Token,
+    pub token: oauth1::Token,
 }
 
-impl<'a> Config<'a> {
-    pub fn new(
-        account: &'a str,
-        consumer_key: &'a str,
-        consumer_secret: &'a str,
-        token_id: &'a str,
-        token_secret: &'a str,
+impl Config {
+    pub fn new<T: ToString>(
+        account: T,
+        consumer_key: T,
+        consumer_secret: T,
+        token_id: T,
+        token_secret: T,
     ) -> Self {
         Self {
-            account,
-            consumer: oauth1::Token::new(consumer_key, consumer_secret),
-            token: oauth1::Token::new(token_id, token_secret),
+            account: account.to_string(),
+            consumer: oauth1::Token::new(consumer_key.to_string(), consumer_secret.to_string()),
+            token: oauth1::Token::new(token_id.to_string(), token_secret.to_string()),
         }
     }
 }

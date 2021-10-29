@@ -4,13 +4,13 @@ use crate::requester::Requester;
 use crate::response::Response;
 use http::Method;
 
-pub struct SuiteQl<'a> {
-    requester: Requester<'a>,
+pub struct SuiteQl {
+    requester: Requester,
     limit: usize,
 }
 
-impl<'a> SuiteQl<'a> {
-    pub fn new(requester: Requester<'a>) -> Self {
+impl SuiteQl {
+    pub fn new(requester: Requester) -> Self {
         Self {
             requester,
             limit: 1000,

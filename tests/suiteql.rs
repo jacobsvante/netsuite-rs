@@ -15,20 +15,16 @@ fn ensure_logging() {
     });
 }
 
-fn make_config<'a>() -> Config<'a> {
-    Config::new("1", "2", "3", "4", "5")
-}
-
-fn make_api<'a>(config: &'a Config, server: &MockServer) -> RestApi<'a> {
-    RestApi::with_base_url(&config, server.base_url())
+fn make_api(server: &MockServer) -> RestApi {
+    let config = Config::new("1", "2", "3", "4", "5");
+    RestApi::with_base_url(config, server.base_url())
 }
 
 #[test]
 fn raw_no_params() {
     ensure_logging();
     let server = MockServer::start();
-    let config = make_config();
-    let api = make_api(&config, &server);
+    let api = make_api(&server);
     let mock = server.mock(|when, then| {
         when.method(POST)
             .path("/query/v1/suiteql")
@@ -45,8 +41,7 @@ fn raw_no_params() {
 fn raw_limit_param() {
     ensure_logging();
     let server = MockServer::start();
-    let config = make_config();
-    let api = make_api(&config, &server);
+    let api = make_api(&server);
     let mock = server.mock(|when, then| {
         when.method(POST)
             .path("/query/v1/suiteql")
@@ -63,9 +58,8 @@ fn raw_limit_param() {
 fn no_params() {
     ensure_logging();
     let server = MockServer::start();
-    let config = make_config();
     let api = {
-        let mut api = make_api(&config, &server);
+        let mut api = make_api(&server);
         api.suiteql.set_limit(2);
         api
     };

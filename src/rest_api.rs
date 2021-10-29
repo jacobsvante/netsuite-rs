@@ -8,24 +8,25 @@ use super::suiteql::SuiteQl;
 
 static DEFAULT_BASE_URL: &str = "https://{}.suitetalk.api.netsuite.com/services/rest";
 
-pub struct RestApi<'a> {
-    requester: Requester<'a>,
-    pub suiteql: SuiteQl<'a>,
+pub struct RestApi {
+    requester: Requester,
+    pub suiteql: SuiteQl,
 }
 
-impl<'a> RestApi<'a> {
-    pub fn new(config: &'a Config) -> Self {
-        let requester = Requester::new(config, Self::default_base_url(config));
+impl RestApi {
+    pub fn new(config: Config) -> Self {
+        let base_url = Self::default_base_url(&config);
+        let requester = Requester::new(config, base_url);
         let suiteql = SuiteQl::new(requester.clone());
         Self { requester, suiteql }
     }
 
-    fn default_base_url(config: &'a Config) -> String {
+    fn default_base_url(config: &Config) -> String {
         let host_part = config.account.replace("_", "-").to_lowercase();
         DEFAULT_BASE_URL.replace("{}", &host_part)
     }
 
-    pub fn with_base_url(config: &'a Config, base_url: String) -> Self {
+    pub fn with_base_url(config: Config, base_url: String) -> Self {
         let requester = Requester::new(config, base_url);
         let suiteql = SuiteQl::new(requester.clone());
         Self { requester, suiteql }

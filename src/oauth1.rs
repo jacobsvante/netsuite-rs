@@ -27,13 +27,13 @@ impl Algorithm {
 }
 
 #[derive(Clone, Debug)]
-pub struct Token<'a> {
-    pub key: &'a str,
-    pub secret: &'a str,
+pub struct Token {
+    pub key: String,
+    pub secret: String,
 }
 
-impl<'a> Token<'a> {
-    pub fn new(key: &'a str, secret: &'a str) -> Self {
+impl Token {
+    pub fn new(key: String, secret: String) -> Self {
         Token { key, secret }
     }
 }
@@ -77,8 +77,8 @@ pub fn authorize(
         method,
         uri,
         &to_query(&params),
-        consumer.secret,
-        token.map(|t| t.secret),
+        &consumer.secret,
+        token.map(|t| t.secret.clone()).as_deref(),
     );
 
     params.push(("oauth_signature".into(), signature));

@@ -34,13 +34,13 @@ pub fn run() -> Result<(), Error> {
             subcmd,
         } => {
             let config = Config::new(
-                &account,
-                &consumer_key,
-                &consumer_secret,
-                &token_id,
-                &token_secret,
+                account,
+                consumer_key,
+                consumer_secret,
+                token_id,
+                token_secret,
             );
-            let api = RestApi::new(&config);
+            let api = RestApi::new(config);
             rest_api_sub_command(subcmd, api)?
         }
         SubCommand::DefaultIniPath => {

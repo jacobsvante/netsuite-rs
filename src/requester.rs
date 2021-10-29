@@ -9,13 +9,13 @@ use http::Method;
 use log::{debug, info};
 
 #[derive(Clone)]
-pub struct Requester<'a> {
-    config: &'a Config<'a>,
+pub struct Requester {
+    config: Config,
     base_url: String,
 }
 
-impl<'a> Requester<'a> {
-    pub fn new(config: &'a Config, base_url: String) -> Self {
+impl Requester {
+    pub fn new(config: Config, base_url: String) -> Self {
         Self { config, base_url }
     }
 
@@ -30,7 +30,7 @@ impl<'a> Requester<'a> {
             &self.config.consumer,
             Some(&self.config.token),
             params.clone().map(|p| p.into()),
-            Some(self.config.account),
+            Some(&self.config.account),
             oauth1::Algorithm::Sha256,
         )
     }

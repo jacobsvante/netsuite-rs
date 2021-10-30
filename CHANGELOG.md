@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.4.0](https://www.github.com/jmagnusson/netsuite-rs/compare/v0.3.0...v0.4.0) (2021-10-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* Allow Params.push to accept anything that can be turned into a String
+
+### Features
+
+* Add support for JSON Schema and OpenAPI + OpenAPI web schema browser ([8d97821](https://www.github.com/jmagnusson/netsuite-rs/commit/8d978213f045e2a6ad19f102489f52c9f89eda69))
+* Don't include CLI dependencies by default ([6bac000](https://www.github.com/jmagnusson/netsuite-rs/commit/6bac0009a78775a141b0ece4f07ac2dede54a298))
+
+
+### Bug Fixes
+
+* Allow Params.push to accept anything that can be turned into a String ([2ebf3e0](https://www.github.com/jmagnusson/netsuite-rs/commit/2ebf3e02801bd868dc2da27d70b58d34bd74e665))
+
 ## [0.3.0](https://www.github.com/jmagnusson/netsuite-rs/compare/v0.2.0...v0.3.0) (2021-10-29)
 
 

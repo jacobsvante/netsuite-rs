@@ -2,7 +2,7 @@
 
 Library for making requests to the NetSuite REST APIs.
 
-Supports both programmatic and CLI usage.
+Supports both programmatic and CLI usage (via `cli` feature).
 
 Currently using ureq for HTTP requests, which means this library is not useful for async environments currently. Async will probably be released as a feature flag in the future.
 
@@ -13,6 +13,8 @@ The project's API is still very much in fluctuation. Pin your dependency to the 
 ## CLI
 
 This is the easiest way to get started. To find out what you can do with the CLI, just append `--help` or `-h` to the installed `netsuite` command.
+
+Please note that you need to add the `cli` feature for CLI access. Using [cargo-edit](https://crates.io/crates/cargo-edit) you can do this by calling: `cargo add netsuite --features cli`
 
 ### Config file
 It's recommended to create an INI config file before using the CLI, to avoid having to provide all OAuth 1.0 details with every command execution.

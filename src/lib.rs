@@ -1,8 +1,8 @@
 #![doc = include_str!("../README.md")]
+#[cfg(feature = "cli")]
 pub mod cli;
 mod config;
 mod error;
-mod metadata;
 mod metadata_api;
 pub mod oauth1;
 mod params;

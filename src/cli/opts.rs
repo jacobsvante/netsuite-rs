@@ -5,8 +5,9 @@ use clap::Parser;
 use log::LevelFilter;
 
 use super::{env::EnvVar, CliError};
-use crate::metadata::VERSION;
 use crate::params::ParamStr;
+
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 impl FromStr for ParamStr {
     type Err = CliError;

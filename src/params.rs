@@ -27,15 +27,18 @@ impl Default for Params {
     }
 }
 
+#[cfg(feature = "cli")]
 #[derive(Debug)]
 pub(crate) struct ParamStr(String, String);
 
+#[cfg(feature = "cli")]
 impl ParamStr {
     pub(crate) fn new(k: String, v: String) -> Self {
         Self(k, v)
     }
 }
 
+#[cfg(feature = "cli")]
 impl From<Vec<ParamStr>> for Params {
     fn from(param_strings: Vec<ParamStr>) -> Self {
         let mut p = Params::new();

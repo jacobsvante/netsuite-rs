@@ -36,3 +36,7 @@ tiny_http = { version = "0.9.0" }
 
 [features]
 cli = ["clap", "tiny_http"]
+
+[[bin]]
+name = "netsuite"
+required-features = ["cli"]

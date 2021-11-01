@@ -12,11 +12,20 @@ use log::{debug, info};
 pub struct Requester {
     config: Config,
     base_url: String,
+    algorithm: oauth1::Algorithm,
 }
 
 impl Requester {
     pub fn new(config: Config, base_url: String) -> Self {
-        Self { config, base_url }
+        Self {
+            config,
+            base_url,
+            algorithm: oauth1::Algorithm::Sha256,
+        }
+    }
+
+    pub fn with_algorithm(self, algorithm: oauth1::Algorithm) -> Self {
+        Self { algorithm, ..self }
     }
 
     fn make_url(&self, endpoint: &str) -> String {
@@ -31,7 +40,7 @@ impl Requester {
             Some(&self.config.token),
             params.clone().map(|p| p.into()),
             Some(&self.config.account),
-            oauth1::Algorithm::Sha256,
+            self.algorithm,
         )
     }
 

@@ -1,3 +1,4 @@
+use crate::oauth1::Algorithm;
 use crate::response::Response;
 
 use super::config::Config;
@@ -35,6 +36,17 @@ impl RestApi {
 
     pub fn with_base_url(config: Config, base_url: String) -> Self {
         let requester = Requester::new(config, base_url);
+        let suiteql = SuiteQl::new(requester.clone());
+        let metadata = MetadataApi::new(requester.clone());
+        Self {
+            requester,
+            suiteql,
+            metadata,
+        }
+    }
+
+    pub fn with_algorithm(self, algorithm: Algorithm) -> Self {
+        let requester = self.requester.with_algorithm(algorithm);
         let suiteql = SuiteQl::new(requester.clone());
         let metadata = MetadataApi::new(requester.clone());
         Self {

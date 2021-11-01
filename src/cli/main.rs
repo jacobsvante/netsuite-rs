@@ -51,10 +51,11 @@ fn rest_api_sub_command(subcmd: RestApiSubCommand, api: RestApi) -> Result<(), C
     use RestApiSubCommand::*;
     match subcmd {
         RestApiSubCommand::SuiteQl {
-            query,
+            path,
             limit,
             offset,
         } => {
+            let query = read_to_string(path)?;
             let resp = api.suiteql.raw(&query, limit, offset)?;
             println!("{}", &resp.body());
         }

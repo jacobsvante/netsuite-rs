@@ -115,8 +115,9 @@ pub(crate) enum RestApiSubCommand {
     },
     #[clap(name = "suiteql")]
     SuiteQl {
-        /// The query to execute. If `-` is provided, query will be read from standard input.
-        query: String,
+        /// Path to SQL file to execute. Defaults to reading from standard input.
+        #[clap(default_value = "/dev/stdin")]
+        path: PathBuf,
         #[clap(short, long, default_value = "1000")]
         limit: usize,
         #[clap(short, long, default_value = "0")]

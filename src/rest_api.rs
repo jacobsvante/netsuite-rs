@@ -34,8 +34,8 @@ impl RestApi {
         DEFAULT_BASE_URL.replace("{}", &host_part)
     }
 
-    pub fn with_base_url(config: Config, base_url: String) -> Self {
-        let requester = Requester::new(config, base_url);
+    pub fn with_base_url(self, base_url: String) -> Self {
+        let requester = self.requester.with_base_url(base_url);
         let suiteql = SuiteQl::new(requester.clone());
         let metadata = MetadataApi::new(requester.clone());
         Self {

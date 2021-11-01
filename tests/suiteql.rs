@@ -17,7 +17,7 @@ fn ensure_logging() {
 
 fn make_api(server: &MockServer) -> RestApi {
     let config = Config::new("1", "2", "3", "4", "5");
-    RestApi::with_base_url(config, server.base_url())
+    RestApi::new(config).with_base_url(server.base_url())
 }
 
 #[test]

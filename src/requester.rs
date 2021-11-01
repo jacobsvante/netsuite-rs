@@ -24,6 +24,10 @@ impl Requester {
         }
     }
 
+    pub fn with_base_url(self, base_url: String) -> Self {
+        Self { base_url, ..self }
+    }
+
     pub fn with_algorithm(self, algorithm: oauth1::Algorithm) -> Self {
         Self { algorithm, ..self }
     }

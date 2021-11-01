@@ -72,7 +72,7 @@ let config = Config::new("123456", "2", "3", "4", "5");
 let api = RestApi::new(config);
 # use httpmock::{MockServer, Method::POST};
 # let server = MockServer::start();
-# let api = RestApi::with_base_url(Config::new("123456", "2", "3", "4", "5"), server.base_url());;
+# let api = RestApi::new(Config::new("123456", "2", "3", "4", "5")).with_base_url(server.base_url());;
 # let mock = server.mock(|when, then| {
 #     when.method(POST).path("/query/v1/suiteql");
 #     then.status(200).body(r#"{"links":[{"rel":"next","href":"https://123456.suitetalk.api.netsuite.com/services/rest/query/v1/suiteql?limit=2&offset=2"},{"rel":"last","href":"https://123456.suitetalk.api.netsuite.com/services/rest/query/v1/suiteql?limit=2&offset=1998"},{"rel":"self","href":"https://123456.suitetalk.api.netsuite.com/services/rest/query/v1/suiteql?limit=2"}],"count":2,"hasMore":false,"items":[{"links":[],"currency":"1","internalid":"24","item":"24","pricelevel":"15","quantity":"1","saleunit":"1","unitprice":"95.49"},{"links":[],"currency":"1","internalid":"24","item":"24","pricelevel":"21","quantity":"1","saleunit":"1","unitprice":"19.99"}],"offset":0,"totalResults":2000}"#);

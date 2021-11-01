@@ -28,8 +28,8 @@ impl Algorithm {
 
 #[derive(Clone, Debug)]
 pub struct Token {
-    pub key: String,
-    pub secret: String,
+    key: String,
+    secret: String,
 }
 
 impl Token {
@@ -38,7 +38,7 @@ impl Token {
     }
 }
 
-pub fn authorize(
+pub(crate) fn authorize(
     method: &str,
     uri: &str,
     consumer: &Token,

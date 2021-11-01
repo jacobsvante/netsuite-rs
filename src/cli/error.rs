@@ -8,4 +8,8 @@ pub enum CliError {
     UnknownEnvironmentVariable(String),
     #[error("Parameter format invalid")]
     BadParam,
+    #[error("IO error: {0}")]
+    IOError(#[from] std::io::Error),
+    #[error("{0}")]
+    LibraryError(#[from] crate::error::Error),
 }

@@ -1,20 +1,15 @@
-use std::{
-    fs,
-    io::{stdout, Write},
-    net::SocketAddrV4,
-    os::unix::prelude::OsStrExt,
-};
+use std::{fs::{self, read_to_string}, io::{stdout, Write}, net::SocketAddrV4, os::unix::prelude::OsStrExt};
 
 use clap::Parser;
 use log::{debug, LevelFilter};
 
 use super::opts::{Opts, RestApiSubCommand, SubCommand};
 use super::{helpers::safe_extract_arg, ini};
+use super::error::CliError;
 use crate::config::Config;
-use crate::error::Error;
 use crate::rest_api::RestApi;
 
-pub fn run() -> Result<(), Error> {
+pub fn run() -> Result<(), CliError> {
     if let Some(level_filter) = safe_extract_arg::<LevelFilter>("level-filter") {
         env_logger::builder().filter(None, level_filter).init();
     }
@@ -52,7 +47,7 @@ pub fn run() -> Result<(), Error> {
     Ok(())
 }
 
-fn rest_api_sub_command(subcmd: RestApiSubCommand, api: RestApi) -> Result<(), Error> {
+fn rest_api_sub_command(subcmd: RestApiSubCommand, api: RestApi) -> Result<(), CliError> {
     use RestApiSubCommand::*;
     match subcmd {
         RestApiSubCommand::SuiteQl {
@@ -188,7 +183,7 @@ fn rest_api_sub_command(subcmd: RestApiSubCommand, api: RestApi) -> Result<(), E
     Ok(())
 }
 
-fn openapi_serve(bind: SocketAddrV4, schema: &str) -> Result<(), Error> {
+fn openapi_serve(bind: SocketAddrV4, schema: &str) -> Result<(), CliError> {
     use tiny_http::{Header, Response, Server, StatusCode};
     let server = Server::http(bind).unwrap();
     for req in server.incoming_requests() {

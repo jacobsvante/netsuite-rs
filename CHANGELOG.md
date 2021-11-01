@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.5.0](https://www.github.com/jmagnusson/netsuite-rs/compare/v0.4.0...v0.5.0) (2021-11-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* oauth1 Token struct fields and authorize function were open to the outside world
+* Harmonize `with_base_url` method with `with_algorithm`
+
+### Features
+
+* Allow overriding OAuth 1 algorithm ([7fa59b4](https://www.github.com/jmagnusson/netsuite-rs/commit/7fa59b4612824c0a706aff9722031e632e8250b3))
+
+
+### Bug Fixes
+
+* Harmonize `with_base_url` method with `with_algorithm` ([d95b76f](https://www.github.com/jmagnusson/netsuite-rs/commit/d95b76fcbfc959349da4fa0ab00688cbf8818bf7))
+* oauth1 Token struct fields and authorize function were open to the outside world ([f0ec653](https://www.github.com/jmagnusson/netsuite-rs/commit/f0ec6532b56594c54939ae1cb0de6ef9832617c2))
+* Only install `netsuite` binary if `cli` feature is enabled ([6e14ced](https://www.github.com/jmagnusson/netsuite-rs/commit/6e14ceda77a027958fa09377daad7d202c097790))
+
 ## [0.4.0](https://www.github.com/jmagnusson/netsuite-rs/compare/v0.3.0...v0.4.0) (2021-10-30)
 
 

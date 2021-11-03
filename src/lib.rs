@@ -14,3 +14,4 @@ mod suiteql;
 pub use config::*;
 pub use error::*;
 pub use rest_api::*;
+pub use suiteql::*;

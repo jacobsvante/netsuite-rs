@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.6.0](https://www.github.com/jmagnusson/netsuite-rs/compare/v0.5.0...v0.6.0) (2021-11-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* `suiteql` command now fetches all results, `suiteql-raw` retains previous behavior
+* Fetch SuiteQL results more quickly using threads
+* Read SuiteQL query from file path instead of from string
+* Return CliError from CLI
+
+### Features
+
+* `suiteql` command now fetches all results, `suiteql-raw` retains previous behavior ([78690ca](https://www.github.com/jmagnusson/netsuite-rs/commit/78690ca398a7c08fe9384c27f5ea8fde1385a6b1))
+* Fetch SuiteQL results more quickly using threads ([f4a2689](https://www.github.com/jmagnusson/netsuite-rs/commit/f4a2689baa3903c37d423e20014b05fbdb564571))
+* Read SuiteQL query from file path instead of from string ([51d3445](https://www.github.com/jmagnusson/netsuite-rs/commit/51d34455d258a2fceb21d7df12ac3b4c50716ed8))
+
+
+### Bug Fixes
+
+* Include error message on IO error ([8cc4cef](https://www.github.com/jmagnusson/netsuite-rs/commit/8cc4ceff61fa3a0127642d2a7fc59bfd70a08902))
+* Include serde error message ([0941a78](https://www.github.com/jmagnusson/netsuite-rs/commit/0941a7809de2d2b37234f4cbb2f95a765abc02ce))
+* Make main structs Debug and Clone ([7fa92f4](https://www.github.com/jmagnusson/netsuite-rs/commit/7fa92f4e0ca3d145b8dbc4ea7f897f3bbf00a868))
+* Return CliError from CLI ([5cbcbcb](https://www.github.com/jmagnusson/netsuite-rs/commit/5cbcbcb5efdb3de5519e4c90977e42b81b7c02ad))
+
 ## [0.5.0](https://www.github.com/jmagnusson/netsuite-rs/compare/v0.4.0...v0.5.0) (2021-11-01)
 
 

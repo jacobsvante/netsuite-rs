@@ -6,6 +6,6 @@ pub enum Error {
     HttpTransportError(String),
     #[error("IO error: {0}")]
     IOError(#[from] std::io::Error),
-    #[error("Serde error")]
+    #[error("Serde error: {0}")]
     SerializationError(#[from] serde_json::Error),
 }

@@ -6,9 +6,9 @@ use crate::params::Params;
 use crate::response::Response;
 use crate::Error;
 use http::Method;
-use log::{debug, info};
+use log::debug;
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Requester {
     config: Config,
     base_url: String,
@@ -76,7 +76,7 @@ impl Requester {
         }
 
         let resp = if let Some(payload) = payload {
-            info!("Payload: {}", payload);
+            debug!("Payload: {}", payload);
             req.send_string(payload)
         } else {
             req.send_string("")

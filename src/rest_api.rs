@@ -10,6 +10,7 @@ use super::suiteql::SuiteQl;
 
 static DEFAULT_BASE_URL: &str = "https://{}.suitetalk.api.netsuite.com/services/rest";
 
+#[derive(Debug, Clone)]
 pub struct RestApi {
     requester: Requester,
     pub suiteql: SuiteQl,

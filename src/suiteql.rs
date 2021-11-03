@@ -4,6 +4,7 @@ use crate::requester::Requester;
 use crate::response::Response;
 use http::Method;
 
+#[derive(Debug, Clone)]
 pub struct SuiteQl {
     requester: Requester,
     limit: usize,

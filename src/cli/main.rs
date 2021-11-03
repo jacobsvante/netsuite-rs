@@ -1,11 +1,16 @@
-use std::{fs::{self, read_to_string}, io::{stdout, Write}, net::SocketAddrV4, os::unix::prelude::OsStrExt};
+use std::{
+    fs::{self, read_to_string},
+    io::{stdout, Write},
+    net::SocketAddrV4,
+    os::unix::prelude::OsStrExt,
+};
 
 use clap::Parser;
 use log::{debug, LevelFilter};
 
+use super::error::CliError;
 use super::opts::{Opts, RestApiSubCommand, SubCommand};
 use super::{helpers::safe_extract_arg, ini};
-use super::error::CliError;
 use crate::config::Config;
 use crate::rest_api::RestApi;
 
@@ -52,12 +57,37 @@ fn rest_api_sub_command(subcmd: RestApiSubCommand, api: RestApi) -> Result<(), C
     match subcmd {
         RestApiSubCommand::SuiteQl {
             path,
+            threads,
+            pretty,
+        } => {
+            let query = read_to_string(path)?;
+            let api = {
+                let mut api = api;
+                api.suiteql.set_threads(threads);
+                api
+            };
+            let resp = api.suiteql.fetch_values(&query)?;
+            let dumped = if pretty {
+                serde_json::to_string_pretty(&resp)?
+            } else {
+                serde_json::to_string(&resp)?
+            };
+            println!("{}", dumped);
+        }
+        RestApiSubCommand::SuiteQlRaw {
+            path,
             limit,
             offset,
+            pretty,
         } => {
             let query = read_to_string(path)?;
             let resp = api.suiteql.raw(&query, limit, offset)?;
-            println!("{}", &resp.body());
+            let dumped = if pretty {
+                serde_json::to_string_pretty(&resp)?
+            } else {
+                serde_json::to_string(&resp)?
+            };
+            println!("{}", dumped);
         }
         Get {
             endpoint,

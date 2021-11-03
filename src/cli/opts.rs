@@ -1,4 +1,5 @@
 use std::net::SocketAddrV4;
+use std::num::NonZeroU8;
 use std::{path::PathBuf, str::FromStr};
 
 use clap::Parser;
@@ -113,8 +114,21 @@ pub(crate) enum RestApiSubCommand {
         #[clap(short = 'H', long = "header")]
         headers: Vec<ParamStr>,
     },
+    /// Fetch all SuiteQL results for the given query
     #[clap(name = "suiteql")]
     SuiteQl {
+        /// Path to SQL file to execute. Defaults to reading from standard input.
+        #[clap(default_value = "/dev/stdin")]
+        path: PathBuf,
+        /// Number of threads to use, i.e. number of concurrent requests.
+        #[clap(short, long, default_value = "10")]
+        threads: NonZeroU8,
+        #[clap(short = 'P', long)]
+        pretty: bool,
+    },
+    /// Fetch a raw SuiteQL result page, including pagination etc
+    #[clap(name = "suiteql-raw")]
+    SuiteQlRaw {
         /// Path to SQL file to execute. Defaults to reading from standard input.
         #[clap(default_value = "/dev/stdin")]
         path: PathBuf,
@@ -122,6 +136,8 @@ pub(crate) enum RestApiSubCommand {
         limit: usize,
         #[clap(short, long, default_value = "0")]
         offset: usize,
+        #[clap(short = 'P', long)]
+        pretty: bool,
     },
     #[clap(name = "jsonschema")]
     JsonSchema {

@@ -31,7 +31,7 @@ impl RestApi {
     }
 
     fn default_base_url(config: &Config) -> String {
-        let host_part = config.account.replace("_", "-").to_lowercase();
+        let host_part = config.account.replace('_', "-").to_lowercase();
         DEFAULT_BASE_URL.replace("{}", &host_part)
     }
 

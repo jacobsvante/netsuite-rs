@@ -47,7 +47,7 @@ pub(crate) fn authorize(
     realm: Option<&str>,
     algorithm: Algorithm,
 ) -> String {
-    let mut params = params.unwrap_or_else(Vec::new);
+    let mut params = params.unwrap_or_default();
     // duration_since might fail if the system clock is set to before the UNIX epoch.
     // Handling this by just setting timestamp to 0 in that case
     let timestamp = SystemTime::now()

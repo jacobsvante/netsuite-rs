@@ -79,6 +79,9 @@ jobs:
     needs: [clippy, cargo-deny, test]
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       -
         name: Create a release Pull Request

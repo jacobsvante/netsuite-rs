@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.7.0](https://github.com/jacobsvante/netsuite-rs/compare/v0.6.0...v0.7.0) (2022-04-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* Use latest dependencies
+
+### Bug Fixes
+
+* Use latest dependencies ([901b43c](https://github.com/jacobsvante/netsuite-rs/commit/901b43cbc349b9c6b46c688a244e6f34a17f04a3))
+
 ## [0.6.0](https://www.github.com/jmagnusson/netsuite-rs/compare/v0.5.0...v0.6.0) (2021-11-03)
 
 

@@ -1,6 +1,6 @@
 use std::{fmt::Display, str::FromStr};
 
-use clap::{AppSettings, IntoApp};
+use clap::IntoApp;
 
 use super::opts::Opts;
 
@@ -9,6 +9,6 @@ where
     T: FromStr,
     T::Err: Display,
 {
-    let app = Opts::into_app().global_setting(AppSettings::IgnoreErrors);
+    let app = Opts::command().ignore_errors(true);
     app.get_matches().value_of_t::<T>(arg_id).ok()
 }

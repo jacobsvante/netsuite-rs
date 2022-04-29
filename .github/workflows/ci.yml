@@ -2,6 +2,15 @@ name: Main
 
 on: [push, pull_request]
 
+env:
+  CARGO_ACTION: actions-rs/cargo@v1.0.1
+  CARGO_DENY_ACTION: EmbarkStudios/cargo-deny-action@v1.2.15
+  CHECKOUT_ACTION: actions/checkout@v3.0.2
+  PUBLISH_CRATE_ACTION: katyo/publish-crates@v1
+  RELEASE_PLEASE_ACTION: google-github-actions/release-please-action@v3.2.1
+  RUST_CACHE_ACTION: Swatinem/rust-cache@v1.3.0
+  RUST_TOOLCHAIN_ACTION: actions-rs/toolchain@v1.0.6
+
 jobs:
 
   clippy:
@@ -9,13 +18,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        uses: actions/checkout@v1
+        uses: ${{ env.CHECKOUT_ACTION }}
       -
-        uses: actions-rs/toolchain@v1
+        uses: ${{ env.RUST_TOOLCHAIN_ACTION }}
         with:
           toolchain: stable
       -
-        uses: Swatinem/rust-cache@v1.3.0
+        uses: ${{ env.RUST_CACHE_ACTION }}
       -
         name: Run clippy
         run: cargo clippy -- -D warnings
@@ -25,9 +34,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        uses: actions/checkout@v1
+        uses: ${{ env.CHECKOUT_ACTION }}
       -
-        uses: actions-rs/toolchain@v1
+        uses: ${{ env.RUST_TOOLCHAIN_ACTION }}
         with:
           toolchain: stable
       -
@@ -39,22 +48,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        uses: actions/checkout@v2
+        uses: ${{ env.CHECKOUT_ACTION }}
       -
-        uses: actions-rs/toolchain@v1
+        uses: ${{ env.RUST_TOOLCHAIN_ACTION }}
         with:
           profile: minimal
           toolchain: stable
           override: true
       -
-        uses: Swatinem/rust-cache@v1.3.0
+        uses: ${{ env.RUST_CACHE_ACTION }}
       -
-        uses: actions-rs/cargo@v1
+        uses: ${{ env.CARGO_ACTION }}
         with:
           command: test
           args: --release
       -
-        uses: actions-rs/cargo@v1
+        uses: ${{ env.CARGO_ACTION }}
         with:
           command: test
           args: --release --all-features
@@ -62,8 +71,8 @@ jobs:
   cargo-deny:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: EmbarkStudios/cargo-deny-action@v1
+    - uses: ${{ env.CHECKOUT_ACTION }}
+    - uses: ${{ env.CARGO_DENY_ACTION }}
 
   create-release-pr:
     name: Conditionally create release PR
@@ -73,7 +82,7 @@ jobs:
     steps:
       -
         name: Create a release Pull Request
-        uses: google-github-actions/release-please-action@v2
+        uses: ${{ env.RELEASE_PLEASE_ACTION }}
         with:
           release-type: rust
           bump-minor-pre-major: true
@@ -84,13 +93,13 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' }}
     steps:
       -
-        uses: google-github-actions/release-please-action@v2
+        uses: ${{ env.RELEASE_PLEASE_ACTION }}
         id: release
         with:
           release-type: rust
           command: github-release
       -
-        uses: actions/checkout@v2
+        uses: ${{ env.CHECKOUT_ACTION }}
         if: ${{ steps.release.outputs.release_created }}
       -
         name: Tag major and minor versions in Git
@@ -109,13 +118,14 @@ jobs:
       -
         name: Make cargo command available
         if: ${{ steps.release.outputs.release_created }}
-        uses: actions-rs/toolchain@v1
+        uses: ${{ env.RUST_TOOLCHAIN_ACTION }}
         with:
           toolchain: stable
           override: true
       -
         name: Publish to Crates.io
         if: ${{ steps.release.outputs.release_created }}
-        uses: katyo/publish-crates@v1
+        uses: ${{ env.PUBLISH_CRATE_ACTION }}
         with:
           registry-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
